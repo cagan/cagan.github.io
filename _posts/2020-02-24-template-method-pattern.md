@@ -16,12 +16,14 @@ In Object Oriented Programming it is easy to face code duplication in any code t
 
 ### TL&DR
 
-Imagine we are making a video game. It is a Realtime Strategy Game, and we have 2 races. One of them is Orcs and the other is Humans. Both races can attack in various ways. And any race that we choice has ability to build structure, collect resources, send scouts. 
+Imagine we are making a video game. It is a Realtime Strategy Game, and we have 2 races. One of them is Orcs and the other is Humans. Both races have units. And any race that we choice has ability to build structure, collect resources, create workers and produce soldiers.
+
+Lets create our **Orcs** class: 
 
 ```php
 class Orcs
 {
-    public function __construct()
+    public function play()
     {
         $this
             ->collectResource()
@@ -51,7 +53,7 @@ class Orcs
         return $this;
     }
 
-    public function produceSoldier()
+    public function produceSoldiers()
     {
         var_dump('New orc soldier being ready. Ready to fight!');
 
@@ -60,9 +62,187 @@ class Orcs
 }
 ```
 
+> *For the Horde!* 
+
+Our **Orcs** ready to fight now. 
+Let's do it for the Humans so we can fight and enjoy our game.
+There is no `createWorker()` method for now. But lets bear with me, we will change it soon.
+
+```php
+class Humans
+{
+    public function play()
+    {
+        $this
+            ->collectResource()
+            ->buildStructure()
+            ->createWorker()
+            ->produceKnights();
+    }
+
+    public function collectResource()
+    {
+        var_dump('Gaining minerals.');
+
+        return $this;
+    }
+
+    public function buildStructure()
+    {
+        var_dump('Building barracks...');
+
+        return $this;
+    }
+
+    public function createWorker()
+    {
+        var_dump('Populating workers to collect more mineral.');
+
+        return $this;
+    }
+
+    public function produceKnights()
+    {
+        var_dump('New knights being ready. Lets kill some Orgs!');
+
+        return $this;
+    }
+}
+``` 
+
+Our human race is ready to fight as well. So lets look at the both classes. If we take a look at these classes we can see that both classes look so similar except one method. 
+However some of the things are not identical exactly. Humans have knights and Orcs have soldiers. `produceKnights()` and `produceSoldiers()`. And we use the same methods in both classes. If we think about for the current code it may not be a problem for the developer team. But if we predict the future and after code grows and become huge developers wanna suicide and it will be chaos.
+
+Let's try to fix it: 
+If we think about the similarities between two classes the first thing that comes in my mind is using Inheritance. We will use the abstract class so we can dictate subclasses to implement some methods they should implement. So we can remove the duplication of the code. 
 
 
-However some of the things are not identical exactly. One of the race uses horses and the other one is uses jackals as a mount.
+```php
+abstract class Races
+{
+	// Implementation of the general things that all races should do  
+}
+```
 
-So lets show this scenario using some PHP codes.
+If we think about the duplication lets move these three functions into the **Races** class: `createWorker(), buildStructure(), collectResource()`. 
 
+```php
+abstract class Races
+{
+    public function collectResource()
+    {
+        var_dump('Gaining minerals.');
+
+        return $this;
+    }
+
+    public function buildStructure()
+    {
+        var_dump('Building barracks...');
+
+        return $this;
+    }
+
+    public function createWorker()
+    {
+        var_dump('Populating workers to collect more mineral.');
+
+        return $this;
+    }
+}
+```
+
+
+So far so good now. Lets declare our abstract method so the other subclasses can implement that method in their own way. But we need to find a common method name so both classes can implement without any confusion. What about `produceUnit()`? Lets implement too. 
+
+```php
+abstract class Races
+{
+
+    public function races()
+    {
+        $this
+            ->collectResource()
+            ->buildStructure()
+            ->createWorker()
+            ->produceUnits();
+    }
+
+    public function collectResource()
+    {
+        var_dump('Gaining minerals.');
+
+        return $this;
+    }
+
+    public function buildStructure()
+    {
+        var_dump('Building barracks...');
+
+        return $this;
+    }
+
+    public function createWorker()
+    {
+        var_dump('Populating workers to collect more mineral.');
+
+        return $this;
+    }
+
+    abstract public function produceUnits();
+}
+```
+
+Notice we created `produceUnits()` method as an abstract method. And we changed the method name as `produceUnits()` into the `play()` method. So everyhing is almost ready except implementing the abstract methods in subclasses.
+
+```php
+class Humans extends Races
+{
+    public function produceUnits()
+    {
+        var_dump('New knights being ready. Lets kill some Orgs!');
+
+        return $this;
+    }
+}
+
+class Orcs extends Races
+{
+    public function produceUnits()
+    {
+        var_dump('New orc soldier being ready. Ready to fight!');
+
+        return $this;
+    }
+}
+
+```
+
+Because we moved the common methods in parent class we removed the common methods. Because we can already access from the parent method. And only thing that `Orcs` And `Humans` class do is implementing the `produceUnits()` method. And we are free to implement our unique logic for each subclassess.
+Lets initialize both classes.
+
+```php
+(new Orcs())->play();
+(new Humans())->play();
+```
+
+```bash
+/Users/cagan/Dev/orcs_and_humans/src/Races.php:21:
+string(17) "Gaining minerals."
+/Users/cagan/Dev/orcs_and_humans/src/Races.php:28:
+string(20) "Building barracks..."
+/Users/cagan/Dev/orcs_and_humans/src/Races.php:35:
+string(43) "Populating workers to collect more mineral."
+/Users/cagan/Dev/orcs_and_humans/src/Orcs.php:11:
+string(44) "New orc soldier being ready. Ready to fight!"
+/Users/cagan/Dev/orcs_and_humans/src/Races.php:21:
+string(17) "Gaining minerals."
+/Users/cagan/Dev/orcs_and_humans/src/Races.php:28:
+string(20) "Building barracks..."
+/Users/cagan/Dev/orcs_and_humans/src/Races.php:35:
+string(43) "Populating workers to collect more mineral."
+/Users/cagan/Dev/orcs_and_humans/src/Humans.php:11:
+string(45) "New knights being ready. Lets kill some Orgs!"
+```
+
+Now we are ready to fight!
