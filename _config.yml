@@ -10,7 +10,7 @@ google_analytics: UA—XXXXXXXX-X
 # Author
 author:
   name:         Cagan Sit
-  url:          https://chester.how
+  url:          https://cagan.me
   email:        cagan.sit@gmail.com
 
 # Build settings
@@ -32,7 +32,7 @@ plugins:
 
 # Permalinks
 permalink:      /:year-:month-:day/:title
-paginate:       5
+paginate:       100
 
 # Excludes
 exclude: [ Gemfile, Gemfile.lock, tale.gemspec ]
