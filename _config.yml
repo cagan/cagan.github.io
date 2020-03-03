@@ -1,8 +1,8 @@
 # Site settings
-title:          Cagan's Blog
-description:    "Blog by Cagan."
+title:          Cagan's Website
+description:    "Blogs by Cagan"
 baseurl:        ""
-url:            "https://chesterhow.github.io"
+url:            "https://cagan.me"
 
 # Google Analytics
 google_analytics: UA—XXXXXXXX-X
