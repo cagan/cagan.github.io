@@ -1,6 +1,6 @@
 # Site settings
-title:          Cagan's Website
-description:    "Blogs by Cagan"
+title:          Cagan's Blog
+description:    "Blogs for Software Engineering and Computer Stuffs"
 baseurl:        ""
 url:            "https://cagan.me"
 
