@@ -51,7 +51,7 @@ class Subscription {
         
     }
 
-    public function swap()
+    public function swap($newPlan)
     {
 
     }
@@ -61,5 +61,188 @@ class Subscription {
 
 Think about this methods. For example cancel. To cancel we need more than update the users table in database. Maybe we need to fire off an API request. Let's say we use Stripe API to handle our billing processes. So we need some additional functionality to our class. Like we need to find stripe customer and stripe subsription by customer. How can we handle it?
 There are three ways to add this behavior. Lets look at them one by one.
-1 is the most worst way. Its simplty add new functions to our class directly. 
+The first one is the obvious way. We just add the behavior at the same class and everything.
+
+```php
+class Subscription {
+
+    public function create()
+    {
+        
+    }
+
+    public function cancel()
+    {
+        
+    }
+
+    public function invoice()
+    {
+        
+    }
+
+    public function swap($newPlan)
+    {
+
+    }
+
+    public function findStripeCustomer()
+    {
+        // API request
+    }
+
+    public function findStripeSubscriptionByCustomer()
+    {
+        // Another API request.
+    }
+}
+```
+
+Easy! But there are problems with that. If you think about the SOLID principles this violates Single Responsibility, and Open-Closed methodologies. We have to change the class everytime we need to change the behavior of that class. And this is not good thing! Also our class should't do Stripe processes here. Its not his responsibility. These two methods are not related with Subsription. They moslty like related with BillingProvider. 
+
+Let's move on the option two. We can use inheritance. Let's say we have another subsription called BillableSubscription and it will be a subclass of Subsription class. So we can move our two methods related with subscription into the BillableSubscription. It is one of the tecnique that we can reduce code duplication. 
+So let's improve the code. 
+
+```php
+class Subscription extends BillableSubscription {
+
+    public function create()
+    {
+        
+    }
+
+    public function cancel()
+    {
+        
+    }
+
+    public function invoice()
+    {
+        
+    }
+
+    public function swap($newPlan)
+    {
+
+    }
+
+}
+
+class BillableSubscription extends Subscription {
+
+    protected function findStripeCustomer()
+    {
+        // API request
+    }
+
+    protected function findStripeSubscriptionByCustomer()
+    {
+        // Another API request.
+    }
+}
+```
+
+
+So our code look much clear than before and easy to understand. 
+But there is a problem. These methods aren't related with the subscription. They are related to almost like the Gateway to BillingProvider. And it is contained in that class. We might have methods like this that might be used elsewhere in our system. That causes duplication again. Remember we don't want to duplicate our code. We decided inheritance is not quite right choice here. 
+
+So move on option three. Composition. Remove the extends keyword with the class. Change accessor to public and change class name as "StripeGateway". I think it is a good name to understand its responsibility. Let's see again. 
+
+
+```php
+class Subscription  {
+    protected StripeGateway $gateway;
+
+    public function __construct(StripeGateway $gateway)
+    {
+        $this->gateway = $gateway;
+    }
+
+    public function create()
+    {
+    }
+
+    public function cancel()
+    {
+        
+    }
+
+    public function invoice()
+    {
+        
+    }
+
+    public function swap($newPlan)
+    {
+
+    }
+
+}
+
+class StripeGateway {
+
+    public function findStripeCustomer()
+    {
+        // API request
+    }
+
+    public function findStripeSubscriptionByCustomer()
+    {
+        // Another API request.
+    }
+}
+```
+
+
+
+Now we have $gateway pointer to the another class. This is object composition. Lastly let's add GatewayInterface and pass throught as constructor parameter so we can decouple our dependency. 
+
+```php
+interface GatewayInterface {
+    public function findCustomer();
+    public function findSubscriptionByCustomer();
+}
+
+class Subscription  {
+    protected StripeGateway $gateway;
+
+    public function __construct(GatewayInterface $gateway)
+    {
+        $this->gateway = $gateway;
+    }
+
+    public function create()
+    {
+    }
+
+    public function cancel()
+    {
+        $customer = $this->gateway->findCustomer();
+    }
+
+    public function invoice()
+    {
+        
+    }
+
+    public function swap($newPlan)
+    {
+    }
+
+}
+
+class StripeGateway implements GatewayInterface {
+
+    public function findCustomer()
+    {
+        // API request
+    }
+
+    public function findSubscriptionByCustomer()
+    {
+        // Another API request.
+    }
+}
+```
+
 
