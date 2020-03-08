@@ -1,7 +1,7 @@
 ---
-  1 layout: post
-  2 title: "Laravel Behind the Scenes"
-  3 author: "Cagan"
-  4 ---
-  
-  
+layout: post
+title:  "Design Patterns 1: Template Method Pattern"
+author: "Cagan"
+comments: false
+
+---
