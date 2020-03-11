@@ -6,7 +6,7 @@ comments: false
 
 ---
 
-OAuth 2.0 is the industry-standard protocol for authorization. Is is also a frmaework. OAuth 2.0 focuses on client developer simplicity while providing specific authorization flows for web applications, desktop applications, mobile phones, and living room devices. 
+OAuth 2.0 is the industry-standard protocol for authorization. Is is also a framework. OAuth 2.0 focuses on client developer simplicity while providing specific authorization flows for web applications, desktop applications, mobile phones, and living room devices. 
 Oauth is not authentication. It is a authorization. So, what is the difference between Authentication and Authorization? 
 
 ### Authentication:
@@ -19,10 +19,7 @@ So authentication means confirming your own identity.
 
 ### Authorization:
 It occurs after your identity is successfully authenticated by the system, which ultimately gives you full permission to access the resources such as information, files, databases, funds, locations, almost anything. Authorization determines your ability to access the system adn up to what extent. Once your identity is verified by the system after successful authentication, you are then authorized to access the resource of the system. 
-Authorization is the process to determine whether the authenticated user has access to the particular resources. It verifies your rights to grant you access to resources such as information, databases, files, etc. Authorization usually comes after authentication which confirms your privileges to perform. In simple terms, it's like giving someone official permission to do something or anything. 
-
-
-Is Oauth2 authorization or authentication? The answer is **authorization**. It is originally created not for a service to authorize a person, it was meant for service to authorize another service. 
+Authorization is the process to determine whether the authenticated user has access to the particular resources. It verifies your rights to grant you access to resources such as information, databases, files, etc. Authorization usually comes after authentication which confirms your privileges to perform. In simple terms, it's like giving someone official permission to do something or anything. It is originally created not for a service to authorize a person, it was meant for service to authorize another service. 
 
 Imagine we have photo printing service and it lets people upload photos to our website and they can order prints of these photos. Well, nobody keeps photos in their machine anymore. Instead they use cloud system. For example users want to be able to store their photos in Google Drive and use it without any download and upload requirements. So, how to we implement this? We need to connect between the user's Google account and our service account and their files. Google Drive uses google authentication  to use it and our application uses our authenticated method, so they are completely seperate each other. How can our application do that the users files on Google Drive need Google authentication. How can we write code for our website that can authenticate with Google on behalf of our users? Here is something we can do. We can ask the user for thier Google ID and password. And our website asks us "Hey user, to achieve your demand I need to connect your Google account, but I can't. So give me your Google username and password, and I can login to your account for you, access your photos and print them. Do you think does this work? I think it work in theory but this doesn't make any sense. Becuase if we do that we give all of the permission of our Google account. But we need to access just photos and its not secure thing. 
 
