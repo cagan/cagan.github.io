@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "How Laravel Works Behind the Scenes"
+title:  "oAuth2 Working Principle"
 author: "Cagan"
 comments: false
 
