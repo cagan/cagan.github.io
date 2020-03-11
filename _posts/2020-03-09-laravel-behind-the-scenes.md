@@ -6,18 +6,45 @@ comments: false
 
 ---
 
-Everything starts with `index.php` as many web applications. Once we open `example.com` our out-of-the-box-configured webserver(Nginx, Apache, ...) points to the `index.php` file located in index.php. This is the initial point that comes up for each request client send. So let's look at the `index.php` file more closely.
+Everything starts with `index.php` as many web applications. In laravel `index.php` file is stored in `public` folder. 
+Let's say we have example application. Once we opened`example.com` our out-of-the-box-configured webserver(Nginx, Apache, ...) points to the `index.php` file located in index.php. This is the initial point that comes up for each request client send. So let's look at the `index.php` file more closely.
 
-![index.php](https://user-images.githubusercontent.com/12012983/76318576-f75c9600-62ee-11ea-8b4b-173df294640b.png)
+```php
+<?php
+
+define('LARAVEL_START', microtime(true));
+
+require __DIR__.'/../vendor/autoload.php';
+
+$app = require_once __DIR__.'/../bootstrap/app.php';
+
+
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+
+$response = $kernel->handle(
+    $request = Illuminate\Http\Request::capture()
+);
+
+$response->send();
+
+$kernel->terminate($request, $response);
+```
+
+```php
+define('LARAVEL_START', microtime(true));
+```
 
 This first time essentialy starts up the timer, so you can time how long it takes to boot up teh framework, etc. But its not using anywhere in Laravel.
 
-
-![autoload](https://user-images.githubusercontent.com/12012983/76319059-b1540200-62ef-11ea-9cbb-1186343118f4.png)
+```php
+require __DIR__.'/../vendor/autoload.php';
+```
 
 This line loads the composer autoloader file. Every PHP class is loaded in your project can be used without writing `require ExampleClass.php`
 
-![app instancer](https://user-images.githubusercontent.com/12012983/76319364-29222c80-62f0-11ea-900f-5153fd864424.png)
+```php
+$app = require_once __DIR__.'/../bootstrap/app.php';
+```
 
 This is where everything starts to get more interesting. `"app"` instance has been created here. Let's go dive into `"app.php"` file and let's see what is going one there.
 
